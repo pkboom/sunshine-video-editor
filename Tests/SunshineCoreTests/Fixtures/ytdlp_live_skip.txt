@@ -1,0 +1,5 @@
+[youtube] Extracting URL: https://www.youtube.com/watch?v=nI725iVsyoQ
+[youtube] nI725iVsyoQ: Downloading webpage
+[youtube] nI725iVsyoQ: Downloading visionos player API JSON
+[youtube] nI725iVsyoQ: Downloading m3u8 information
+[download] 24/7 deep sleep music 🌌 calm ambient to sleep & dream to 2026-09-30 10:14 does not pass filter (!is_live), skipping ..

@@ -1,0 +1,32 @@
+[youtube] Extracting URL: https://www.youtube.com/watch?v=jNQXAC9IVRw
+[youtube] jNQXAC9IVRw: Downloading webpage
+[youtube] jNQXAC9IVRw: Downloading visionos player API JSON
+[youtube] jNQXAC9IVRw: Downloading m3u8 information
+[info] jNQXAC9IVRw: Downloading 1 format(s): 133+140
+[download] Destination: /Users/tester/Downloads/.sunshine-dl-3F2B7C1E-9A4D-4E0B-8C6A-1D2E3F405162/Me at the zoo [jNQXAC9IVRw].f133.mp4
+SUNSHINE|downloading|1024|433081|NA|avc1.4d400c
+SUNSHINE|downloading|3072|433081|NA|avc1.4d400c
+SUNSHINE|downloading|7168|433081|NA|avc1.4d400c
+SUNSHINE|downloading|15360|433081|NA|avc1.4d400c
+SUNSHINE|downloading|31744|433081|NA|avc1.4d400c
+SUNSHINE|downloading|64512|433081|NA|avc1.4d400c
+SUNSHINE|downloading|130048|433081|NA|avc1.4d400c
+SUNSHINE|downloading|261120|433081|NA|avc1.4d400c
+SUNSHINE|downloading|433081|433081|NA|avc1.4d400c
+SUNSHINE|finished|433081|433081|NA|avc1.4d400c
+[download] Destination: /Users/tester/Downloads/.sunshine-dl-3F2B7C1E-9A4D-4E0B-8C6A-1D2E3F405162/Me at the zoo [jNQXAC9IVRw].f140.m4a
+SUNSHINE|downloading|1024|309288|NA|none
+SUNSHINE|downloading|3072|309288|NA|none
+SUNSHINE|downloading|7168|309288|NA|none
+SUNSHINE|downloading|15360|309288|NA|none
+SUNSHINE|downloading|31744|309288|NA|none
+SUNSHINE|downloading|64512|309288|NA|none
+SUNSHINE|downloading|130048|309288|NA|none
+SUNSHINE|downloading|261120|309288|NA|none
+SUNSHINE|downloading|309288|309288|NA|none
+SUNSHINE|finished|309288|309288|NA|none
+[Merger] Merging formats into "/Users/tester/Downloads/.sunshine-dl-3F2B7C1E-9A4D-4E0B-8C6A-1D2E3F405162/Me at the zoo [jNQXAC9IVRw].mp4"
+Deleting original file /Users/tester/Downloads/.sunshine-dl-3F2B7C1E-9A4D-4E0B-8C6A-1D2E3F405162/Me at the zoo [jNQXAC9IVRw].f140.m4a (pass -k to keep)
+Deleting original file /Users/tester/Downloads/.sunshine-dl-3F2B7C1E-9A4D-4E0B-8C6A-1D2E3F405162/Me at the zoo [jNQXAC9IVRw].f133.mp4 (pass -k to keep)
+[MoveFiles] Moving file "/Users/tester/Downloads/.sunshine-dl-3F2B7C1E-9A4D-4E0B-8C6A-1D2E3F405162/Me at the zoo [jNQXAC9IVRw].mp4" to "/Users/tester/Downloads/Me at the zoo [jNQXAC9IVRw].mp4"
+SUNSHINE_FILE|/Users/tester/Downloads/Me at the zoo [jNQXAC9IVRw].mp4

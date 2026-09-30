@@ -1,0 +1,4 @@
+[youtube] Extracting URL: https://www.youtube.com/watch?v=jfKfPfyJRdk
+[youtube] jfKfPfyJRdk: Downloading webpage
+[youtube] jfKfPfyJRdk: Downloading visionos player API JSON
+ERROR: [youtube] jfKfPfyJRdk: This live stream recording is not available.

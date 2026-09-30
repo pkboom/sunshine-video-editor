@@ -1,0 +1,7 @@
+[youtube] Extracting URL: https://www.youtube.com/watch?v=jNQXAC9IVRw
+[youtube] jNQXAC9IVRw: Downloading webpage
+[youtube] jNQXAC9IVRw: Downloading visionos player API JSON
+[youtube] jNQXAC9IVRw: Downloading m3u8 information
+[info] jNQXAC9IVRw: Downloading 1 format(s): 133+140
+[download] /Users/tester/Downloads/Me at the zoo [jNQXAC9IVRw].mp4 has already been downloaded
+SUNSHINE_FILE|/Users/tester/Downloads/Me at the zoo [jNQXAC9IVRw].mp4

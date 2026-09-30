@@ -1,0 +1,7 @@
+.build/
+.build-*/
+dist/
+Helpers/
+Tests/**/Generated/
+.DS_Store
+.omc/state/

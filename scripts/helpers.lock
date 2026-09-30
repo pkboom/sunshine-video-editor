@@ -1,0 +1,7 @@
+# Pinned arm64 helper binaries for Contents/Helpers.
+# Format: name|version|url|sha256   (sha256 is of the downloaded file)
+# Bump a helper by editing its line; fetch-helpers.sh refuses mismatched downloads.
+yt-dlp|2026.08.19|https://github.com/yt-dlp/yt-dlp/releases/download/2026.08.19/yt-dlp_macos|0f192b7ec147ab6288885d6351d9ab67367640029b4377576ef46dd79cf7b202
+deno|2.9.7|https://github.com/denoland/deno/releases/download/v2.9.7/deno-aarch64-apple-darwin.zip|5cd46d6268f6f78f5d88bdc7159d20bd44cdaa4b3303474839f87ec6fe7ae25c
+ffmpeg|9.0.2|https://ffmpeg.martin-riedl.de/download/macos/arm64/1789931890_9.0.2/ffmpeg.zip|c8ed4c4e6978a03c485edbfe4e0a5dc2380f8a30bba5150531b31b094492d924
+gpl-3.0|2007-06-29|https://www.gnu.org/licenses/gpl-3.0.txt|3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986

@@ -1,0 +1,21 @@
+SUNSHINE|downloading|1024|433081|NA|avc1.4d400c
+SUNSHINE|downloading|3072|433081|NA|avc1.4d400c
+SUNSHINE|downloading|7168|433081|NA|avc1.4d400c
+SUNSHINE|downloading|15360|433081|NA|avc1.4d400c
+SUNSHINE|downloading|31744|433081|NA|avc1.4d400c
+SUNSHINE|downloading|64512|433081|NA|avc1.4d400c
+SUNSHINE|downloading|130048|433081|NA|avc1.4d400c
+SUNSHINE|downloading|261120|433081|NA|avc1.4d400c
+SUNSHINE|downloading|433081|433081|NA|avc1.4d400c
+SUNSHINE|finished|433081|433081|NA|avc1.4d400c
+SUNSHINE|downloading|1024|309288|NA|none
+SUNSHINE|downloading|3072|309288|NA|none
+SUNSHINE|downloading|7168|309288|NA|none
+SUNSHINE|downloading|15360|309288|NA|none
+SUNSHINE|downloading|31744|309288|NA|none
+SUNSHINE|downloading|64512|309288|NA|none
+SUNSHINE|downloading|130048|309288|NA|none
+SUNSHINE|downloading|261120|309288|NA|none
+SUNSHINE|downloading|309288|309288|NA|none
+SUNSHINE|finished|309288|309288|NA|none
+SUNSHINE_FILE|/Users/tester/Downloads/Me at the zoo [jNQXAC9IVRw].mp4
