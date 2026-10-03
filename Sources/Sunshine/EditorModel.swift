@@ -49,7 +49,7 @@ final class EditorModel {
     var urlText = ""
     private(set) var downloadLabel = ""
     private(set) var downloadFraction: Double?
-    @ObservationIgnored private let downloadService = DownloadService()
+    @ObservationIgnored private let downloadService: DownloadService
     @ObservationIgnored private var downloadTask: Task<Void, Never>?
     @ObservationIgnored private var downloadGeneration = 0
 
@@ -69,6 +69,10 @@ final class EditorModel {
     @ObservationIgnored private var fileWatcher: DispatchSourceFileSystemObject?
 
     let playback = PlaybackController()
+
+    init(downloadService: DownloadService = DownloadService()) {
+        self.downloadService = downloadService
+    }
 
     // MARK: Derived
 
@@ -125,7 +129,14 @@ final class EditorModel {
         panel.allowedContentTypes = [.movie, .mpeg4Movie, .quickTimeMovie]
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
+        // First time: start in Downloads, where YouTube downloads land. After a pick, leave it to
+        // the panel, which reopens the last folder used.
+        let pickedKey = "SunshineHasPickedFile"
+        if !UserDefaults.standard.bool(forKey: pickedKey) {
+            panel.directoryURL = Self.downloadsDirectory
+        }
         guard panel.runModal() == .OK, let url = panel.url else { return }
+        UserDefaults.standard.set(true, forKey: pickedKey)
         open(url: url)
     }
 
@@ -143,7 +154,7 @@ final class EditorModel {
         Task {
             do {
                 let loaded = try await Self.loadSource(url: url)
-                guard generation == openGeneration, !isExporting else { return }
+                guard generation == openGeneration else { return }
                 install(loaded, url: url, fromDownload: fromDownload)
             } catch {
                 guard generation == openGeneration else { return }
@@ -190,7 +201,11 @@ final class EditorModel {
         // The state may have moved on while the file loaded (e.g. into preview or a download);
         // only replace the source if the state machine still allows it.
         guard let next = try? state.transition(fromDownload ? .downloadFinished : .assetLoaded) else {
-            if fromDownload { downloadEnded() }
+            if fromDownload {
+                downloadEnded()
+            } else {
+                banner = BannerMessage(kind: .info, text: "“\(url.lastPathComponent)” wasn't opened because Sunshine was busy. Open it again.")
+            }
             return
         }
         state = next
@@ -322,14 +337,24 @@ final class EditorModel {
         playback.play(range: range.snapped, id: range.id)
     }
 
-    /// Timeline click: seek with zero tolerance to seconds on the timeline's span.
+    /// Timeline click or drag end: seek with zero tolerance to seconds on the timeline's span.
     func seek(toSeconds seconds: Double) {
         guard can(.playback) else { return }
+        playback.seek(to: timelineTime(seconds))
+    }
+
+    /// Timeline drag: show the frame under the pointer while it moves.
+    func scrub(toSeconds seconds: Double) {
+        guard can(.playback) else { return }
+        playback.scrub(to: timelineTime(seconds))
+    }
+
+    /// Seconds on the timeline's span → a `CMTime` clamped to that span.
+    private func timelineTime(_ seconds: Double) -> CMTime {
         let span = timelineSpan
         let timescale = sampleIndex?.timescale ?? span.duration.timescale
-        var time = CMTime(seconds: seconds, preferredTimescale: max(timescale, 600))
-        time = CMTimeClampToRange(time, range: span)
-        playback.seek(to: time)
+        let time = CMTime(seconds: seconds, preferredTimescale: max(timescale, 600))
+        return CMTimeClampToRange(time, range: span)
     }
 
     private var snapMode: SnapMode { snapToKeyframes ? .keyframe : .frame }
@@ -542,11 +567,6 @@ final class EditorModel {
 
     private func sourceLost() {
         guard sourceURL != nil else { return }
-        if isDownloading {
-            downloadTask?.cancel()
-            downloadTask = nil
-            downloadGeneration += 1
-        }
         if isExporting {
             exportTask?.cancel()
             exportTask = nil

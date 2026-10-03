@@ -97,7 +97,13 @@ final class TempDir {
     @Test func blockedErrorCarriesXattrHint() {
         let e = BinaryLocatorError.blocked(.ytdlp, appPath: "/Applications/Sunshine.app")
         #expect(e.localizedDescription
-            == "Helper 'yt-dlp' was blocked by macOS. Run: xattr -dr com.apple.quarantine /Applications/Sunshine.app")
+            == "Helper 'yt-dlp' was blocked by macOS. Run: xattr -dr com.apple.quarantine '/Applications/Sunshine.app'")
+    }
+
+    @Test func blockedHintQuotesThePath() {
+        let e = BinaryLocatorError.blocked(.ytdlp, appPath: "/Users/me/Downloads/Sunshine 2 (Bo's).app")
+        #expect(e.localizedDescription
+            == #"Helper 'yt-dlp' was blocked by macOS. Run: xattr -dr com.apple.quarantine '/Users/me/Downloads/Sunshine 2 (Bo'\''s).app'"#)
     }
 
     @Test func launchFailuresMapToBlocked() {

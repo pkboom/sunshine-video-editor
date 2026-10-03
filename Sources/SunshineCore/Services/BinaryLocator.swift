@@ -18,7 +18,7 @@ public enum BinaryLocatorError: Error, Equatable, Sendable, LocalizedError {
         case .notFound(let helper):
             "Helper '\(helper.rawValue)' is missing from Sunshine. Download Sunshine again."
         case .blocked(let helper, let appPath):
-            "Helper '\(helper.rawValue)' was blocked by macOS. Run: xattr -dr com.apple.quarantine \(appPath)"
+            "Helper '\(helper.rawValue)' was blocked by macOS. Run: xattr -dr com.apple.quarantine '\(appPath.replacingOccurrences(of: "'", with: "'\\''"))'"
         }
     }
 }

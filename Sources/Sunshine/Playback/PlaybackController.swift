@@ -23,6 +23,10 @@ final class PlaybackController {
     @ObservationIgnored private var rangePlaySeekPending = false
     /// Bumped by every ▶ so only the latest ▶'s seek completion acts, even for the same range.
     @ObservationIgnored private var rangePlayToken = 0
+    /// Latest time asked for by a timeline drag that no seek has landed on yet.
+    @ObservationIgnored private var scrubTarget: CMTime?
+    /// A scrub seek is in flight; further drag times only update `scrubTarget`.
+    @ObservationIgnored private var scrubSeekInFlight = false
 
     init() {
         player.actionAtItemEnd = .pause
@@ -30,7 +34,9 @@ final class PlaybackController {
             forInterval: CMTime(value: 1, timescale: 4), queue: .main
         ) { [weak self] time in
             MainActor.assumeIsolated {
-                self?.currentSeconds = time.isNumeric ? time.seconds : 0
+                // While scrubbing the player lags the pointer; keep the playhead on the pointer.
+                guard let self, !self.scrubSeekInFlight else { return }
+                self.currentSeconds = time.isNumeric ? time.seconds : 0
             }
         }
         // KVO may fire on any thread: handle it in place on main, otherwise hop to the main actor.
@@ -77,7 +83,36 @@ final class PlaybackController {
     /// Manual seek (timeline click). Zero tolerance so the frame shown is the one clicked.
     func seek(to time: CMTime) {
         resetRangePlay()
+        scrubTarget = nil
         performSeek(to: time) { _ in }
+    }
+
+    /// Live preview while dragging on the timeline. "Chase time" (Apple QA1820): at most one
+    /// seek in flight, and when it lands, seek again to the latest target if the pointer moved.
+    /// Seeking on every drag event would cancel each seek before it decodes a frame. Pauses
+    /// playback; finish the drag with `seek(to:)` for an exact final frame.
+    func scrub(to time: CMTime) {
+        resetRangePlay()
+        player.pause()
+        scrubTarget = time
+        currentSeconds = time.isNumeric ? time.seconds : currentSeconds
+        if !scrubSeekInFlight { chaseScrubTarget() }
+    }
+
+    private func chaseScrubTarget() {
+        guard let target = scrubTarget else { return }
+        scrubSeekInFlight = true
+        player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero) { _ in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.scrubSeekInFlight = false
+                if let next = self.scrubTarget, CMTimeCompare(next, target) != 0 {
+                    self.chaseScrubTarget()
+                } else {
+                    self.scrubTarget = nil
+                }
+            }
+        }
     }
 
     /// ▶ on a range: play `range` and stop at its end.

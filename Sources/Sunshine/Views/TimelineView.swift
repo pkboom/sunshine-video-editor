@@ -167,6 +167,10 @@ struct TimelineView: View {
                     dragKind = beginDrag(at: value.startLocation.x, mapper: mapper)
                 }
                 dragSeconds = mapper.seconds(value.location.x)
+                // Past the click slop, so a plain click still seeks without pausing playback.
+                if hypot(value.translation.width, value.translation.height) >= Self.clickSlop {
+                    model.scrub(toSeconds: dragSeconds)
+                }
             }
             .onEnded { value in
                 let kind = dragKind
@@ -179,9 +183,9 @@ struct TimelineView: View {
                 }
                 switch kind {
                 case .create(let anchor):
-                    if let id = model.addRange(from: anchor, to: end) {
-                        settle(id, from: anchor, to: end)
-                    }
+                    let id = model.addRange(from: anchor, to: end)
+                    if let id { settle(id, from: anchor, to: end) }
+                    seekToSnappedEdge(of: id, near: end)
                 case .adjust(let id, let movingStart, let fixed):
                     let shown = model.ranges.first { $0.id == id }
                         .map { movingStart ? $0.snapped.end.seconds : $0.snapped.start.seconds } ?? fixed
@@ -189,6 +193,7 @@ struct TimelineView: View {
                     if model.ranges.contains(where: { $0.id == id }) {
                         settle(id, from: shown, to: end)
                     }
+                    seekToSnappedEdge(of: id, near: end)
                 case .seek, nil:
                     model.seek(toSeconds: end)
                 }
@@ -203,6 +208,17 @@ struct TimelineView: View {
                            fixed: hit.isStart ? raw.end.seconds : raw.start.seconds)
         }
         return .create(anchor: mapper.seconds(x))
+    }
+
+    /// Ends a range drag on the edge that was moved, as snapped, so the frame shown is the cut
+    /// (with keyframe snap the edge can land well away from the pointer). Falls back to `seconds`.
+    private func seekToSnappedEdge(of id: UUID?, near seconds: Double) {
+        guard let range = model.ranges.first(where: { $0.id == id }) else {
+            model.seek(toSeconds: seconds)
+            return
+        }
+        let start = range.snapped.start.seconds, end = range.snapped.end.seconds
+        model.seek(toSeconds: abs(start - seconds) <= abs(end - seconds) ? start : end)
     }
 
     /// Shows the range at the release position, then animates it onto its snapped edges.

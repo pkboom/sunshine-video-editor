@@ -12,7 +12,7 @@ let package = Package(
         .executableTarget(name: "Sunshine", dependencies: ["SunshineCore"]),
         .testTarget(name: "SunshineCoreTests", dependencies: ["SunshineCore"],
                     resources: [.copy("Fixtures")]),
-        .testTarget(name: "SunshineIntegrationTests", dependencies: ["SunshineCore"],
+        .testTarget(name: "SunshineIntegrationTests", dependencies: ["SunshineCore", "Sunshine"],
                     exclude: ["Generated"]),
     ]
 )

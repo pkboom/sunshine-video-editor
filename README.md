@@ -8,11 +8,14 @@ passthrough copies, saved next to the source as `<name>-edited.mp4`.
 **Requirements:** a Mac with Apple Silicon (M1 or later) running macOS 15 Sequoia or
 newer. Intel Macs are not supported.
 
-## Installing (for friends)
+## Installing (internal)
 
-Sunshine isn't signed by Apple, so macOS needs one extra step the first time.
+Sunshine is for internal use and isn't notarized by Apple, so macOS needs one extra
+step the first time.
 
-1. Unzip `Sunshine.zip` and move `Sunshine.app` into `/Applications`.
+1. Open `Sunshine.dmg` and drag **Sunshine** onto **Applications**, then eject the
+   disk image. (From `Sunshine.zip` instead: unzip it and move `Sunshine.app` into
+   `/Applications`.)
 2. Open Terminal and run:
 
    ```sh
@@ -71,7 +74,8 @@ You need Xcode 26 (Swift 6.3) on an Apple Silicon Mac.
 
 ```sh
 scripts/fetch-helpers.sh      # downloads the pinned helpers into Helpers/ (SHA-256 checked)
-scripts/build-app.sh --zip    # builds dist/Sunshine.app and dist/Sunshine.zip
+scripts/build-app.sh --dmg    # builds dist/Sunshine.app and dist/Sunshine.dmg (add --zip for a zip too);
+                              # the first run asks to let your terminal control Finder (window layout)
 scripts/verify-bundle.sh      # checks the bundle is self-contained and signed
 ```
 

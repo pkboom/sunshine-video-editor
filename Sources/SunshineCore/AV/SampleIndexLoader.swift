@@ -29,7 +29,7 @@ public enum SampleIndexLoader {
         }
 
         let media: [Sample]
-        if !forceReader, allUnitRate, canProvideCursors, let cursor = cursorSamples(videoTrack) {
+        if !forceReader, allUnitRate, canProvideCursors, let cursor = try cursorSamples(videoTrack) {
             media = cursor
         } else {
             media = try readerSamples(asset: asset, videoTrack: videoTrack)
@@ -68,10 +68,13 @@ public enum SampleIndexLoader {
     ///
     /// `makeSampleCursorAtFirstSampleInDecodeOrder()` is not deprecated in the macOS 26 SDK; only the
     /// synchronous `canProvideSampleCursors` getter is, which is why that flag is read with `load`.
-    private static func cursorSamples(_ track: AVAssetTrack) -> [Sample]? {
+    private static func cursorSamples(_ track: AVAssetTrack) throws -> [Sample]? {
         guard let cursor = track.makeSampleCursorAtFirstSampleInDecodeOrder() else { return nil }
         var out: [Sample] = []
+        var steps = 0
         repeat {
+            steps += 1
+            if steps % 4096 == 0 { try Task.checkCancellation() }
             let pts = cursor.presentationTimeStamp
             if pts.isNumeric {
                 out.append(Sample(pts: pts, isSync: cursor.currentSampleSyncInfo.sampleIsFullSync.boolValue))

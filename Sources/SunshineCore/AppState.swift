@@ -61,8 +61,9 @@ extension AppState {
     }
 
     public func transition(_ e: AppEvent) throws -> AppState {
-        // Cross-cutting: losing the source or closing it empties the editor from any state.
-        // Any in-flight job is cancelled by the caller first.
+        // A download doesn't use the source, so it outlives it.
+        if case .downloading = self, e == .sourceLost { return .downloading(returnTo: .empty) }
+        // The caller cancels any in-flight export first.
         if e == .sourceLost || e == .closed { return .empty }
 
         switch (self, e) {

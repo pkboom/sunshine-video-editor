@@ -24,6 +24,7 @@ import Testing
 
     /// Plan §3a "Exits to" (plus the cross-cutting source-lost/close rule).
     static func expectedTransition(_ s: AppState, _ e: AppEvent) -> AppState? {
+        if case .downloading = s, e == .sourceLost { return .downloading(returnTo: .empty) }
         if e == .sourceLost || e == .closed { return .empty }
         switch (s, e) {
         case (.empty, .assetLoaded), (.indexing, .assetLoaded), (.editing, .assetLoaded): return .indexing
@@ -77,9 +78,19 @@ import Testing
         }
     }
 
-    @Test(arguments: allStates)
-    func sourceLostFromAnyStateGoesEmpty(_ state: AppState) throws {
+    @Test(arguments: [AppState.empty, .indexing, .editing, .previewing,
+                      .exporting(returnTo: .editing), .exporting(returnTo: .previewing)])
+    func sourceLostOutsideADownloadGoesEmpty(_ state: AppState) throws {
         #expect(try state.transition(.sourceLost) == .empty)
+    }
+
+    @Test(arguments: [AppState.downloading(returnTo: .empty), .downloading(returnTo: .indexing),
+                      .downloading(returnTo: .editing)])
+    func sourceLostDuringDownloadKeepsDownloading(_ state: AppState) throws {
+        let next = try state.transition(.sourceLost)
+        #expect(next == .downloading(returnTo: .empty))
+        #expect(try next.transition(.downloadFinished) == .indexing)
+        #expect(try next.transition(.downloadCancelledOrFailed) == .empty)
     }
 
     @Test func invalidTransitionsThrow() {

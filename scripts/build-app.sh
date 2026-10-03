@@ -2,6 +2,7 @@
 # Builds dist/Sunshine.app (arm64, ad-hoc signed, non-sandboxed).
 #   scripts/build-app.sh          build the .app
 #   scripts/build-app.sh --zip    also write dist/Sunshine.zip for sharing
+#   scripts/build-app.sh --dmg    also write dist/Sunshine.dmg (drag-to-Applications)
 # Run scripts/fetch-helpers.sh first so Helpers/ is populated.
 set -euo pipefail
 
@@ -12,10 +13,12 @@ APP="$DIST/Sunshine.app"
 HELPERS=(yt-dlp deno ffmpeg)
 
 ZIP=0
+DMG=0
 for arg in "$@"; do
     case "$arg" in
         --zip) ZIP=1 ;;
-        *) echo "usage: $0 [--zip]" >&2; exit 2 ;;
+        --dmg) DMG=1 ;;
+        *) echo "usage: $0 [--zip] [--dmg]" >&2; exit 2 ;;
     esac
 done
 
@@ -66,6 +69,12 @@ if [[ "$ZIP" == 1 ]]; then
     rm -f "$DIST/Sunshine.zip"
     ditto -c -k --keepParent "$APP" "$DIST/Sunshine.zip"
     echo "wrote $DIST/Sunshine.zip ($(du -h "$DIST/Sunshine.zip" | cut -f1))"
+fi
+
+if [[ "$DMG" == 1 ]]; then
+    echo "==> building dmg"
+    "$ROOT/scripts/make-dmg.sh" "$APP" "$DIST/Sunshine.dmg" "$SCRATCH"
+    echo "wrote $DIST/Sunshine.dmg ($(du -h "$DIST/Sunshine.dmg" | cut -f1))"
 fi
 
 echo "built $APP ($(du -sh "$APP" | cut -f1))"
